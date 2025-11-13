@@ -7,12 +7,9 @@ WORKDIR /app
 # Copy your project files
 COPY . .
 
-# Install Maven
-RUN apt-get update && apt-get install -y maven
-
-# Run a simple health check: compile + run a single test
-# Adjust "HealthCheckTest" to your actual test if needed
-RUN mvn -q -Dtest=HealthCheckTest test || (echo "Health check failed" && exit 1)
+# Install Maven on Alpine then run health check
+RUN apk add --no-cache maven \
+ && mvn -q -Dtest=HealthCheckTest test || (echo "Health check failed" && exit 1)
 
 # Finish container execution successfully
 CMD ["echo", "Docker health check complete"]
